@@ -6,6 +6,8 @@ TMPDIR=$(mktemp -d)
 trap "rm -rf '${TMPDIR}'" EXIT
 
 FILE_PREFIX="chaotic"
+KEY_DESCRIPTION="PedroHLC's Chaotic-AUR"
+KEY_EMAIL="chaotic-aur@pedrohlc.com"
 
 #KEYSERVER='hkp://pgp.ustc.edu.cn'
 #KEYSERVER='hkp://pool.sks-keyservers.net'
@@ -20,12 +22,12 @@ GPG="gpg --quiet --batch --no-tty --no-permission-warning --keyserver "${KEYSERV
 pushd "$(dirname "$0")" >/dev/null
 
 $GPG --gen-key <<EOF
-%echo Generating Arch Linux CN Keyring keychain master key...
+%echo Generating ${KEY_DESCRIPTION} Keyring keychain master key...
 Key-Type: RSA
 Key-Length: 1024
 Key-Usage: sign
-Name-Real: PedroHLC's Chaotic-AUR Keyring Keychain Master Key
-Name-Email: chaotic-aur@pedrohlc.com
+Name-Real: ${KEY_DESCRIPTION} Keyring Keychain Master Key
+Name-Email: ${KEY_EMAIL}
 Expire-Date: 0
 %no-protection
 %commit
@@ -77,7 +79,7 @@ while read -ra data; do
 	fi
 done < packager-revoked-keyids
 
-cat master/*.asc packager/*.asc packager-revoked/*.asc > archlinuxcn.gpg
+cat master/*.asc packager/*.asc packager-revoked/*.asc > ${FILE_PREFIX}.gpg
 
 if [[ ! -f ${FILE_PREFIX}-revoked ]] ; then
     touch ${FILE_PREFIX}-revoked

@@ -1,0 +1,34 @@
+ 
+name: Push to chaotic-aur.github.io
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+        - chaotic.gpg
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: main
+      - uses: actions/checkout@v4
+        with:
+          repository: chaotic-aur/chaotic-aur.github.io
+          token: ${{ secrets.GH_PAT }}
+          sparse-checkout: |
+            chaotic.gpg
+          sparse-checkout-cone-mode: false
+          path: target
+      - name: Commit and push changes
+        run: |
+          cp main/chaotic.gpg target/chaotic.gpg
+          cd target
+          git config --local user.email "actions@chaotic.cx"
+          git config --local user.name "Chaotic Temeraire"
+          git add chaotic.gpg
+          git commit -m "Update chaotic.gpg"
+          git push
